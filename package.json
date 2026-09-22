@@ -1,0 +1,9 @@
+{
+  "name": "planetpulse",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server"
+  }
+}

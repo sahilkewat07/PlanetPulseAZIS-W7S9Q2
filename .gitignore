@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build and tooling output
+dist/
+.vite/
+coverage/
+*.log
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/

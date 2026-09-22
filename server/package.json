@@ -1,0 +1,17 @@
+{
+  "name": "planetpulse-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "mongoose": "latest"
+  },
+  "devDependencies": { "nodemon": "latest" }
+}

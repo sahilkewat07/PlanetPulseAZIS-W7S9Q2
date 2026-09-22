@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PlanetPulse 🌱
 
 ## Description
@@ -167,3 +168,6 @@ All activity quantities are numbers. The backend calculates and stores the final
 ## No Demo Credentials Required
 
 PlanetPulse deliberately has **no login, signup, passwords, JWTs, user accounts, or protected routes**. It uses one shared demo dataset, so graders and visitors can use every feature as soon as they open the public URL. No test or demo credentials are required.
+=======
+# PlanetPulseAZIS-W7S9Q2
+>>>>>>> 9191728cd0dd3991a78473ae00472e434e879118

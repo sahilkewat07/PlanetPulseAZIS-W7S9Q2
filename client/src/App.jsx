@@ -25,7 +25,6 @@ function App() {
         <main className="min-w-0 flex-1">
         <header className="flex items-center justify-between px-5 py-5 sm:px-8 lg:px-10 lg:py-7">
           <p className="text-sm font-semibold text-pp-ink opacity-70">{title}</p>
-          <span className="hidden border border-pp-border bg-white px-3 py-1.5 text-xs font-semibold text-pp-primary sm:inline-flex">Shared demo for everyone</span>
         </header>
         <div className="mx-auto w-full max-w-7xl px-5 pb-10 sm:px-8 lg:px-10 lg:pb-12">
           <Routes>

@@ -18,7 +18,6 @@ function Sidebar() {
             <span className="block text-xs font-medium text-pp-primary">Small choices. Clear impact.</span>
           </span>
         </NavLink>
-        <span className="border border-pp-border px-3 py-1 text-xs font-semibold text-pp-primary lg:hidden">Shared demo</span>
       </div>
 
       <nav className="mt-5 grid grid-cols-4 gap-1 lg:mt-12 lg:flex lg:flex-col" aria-label="Main navigation">

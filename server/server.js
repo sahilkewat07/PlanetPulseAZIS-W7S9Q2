@@ -1,3 +1,4 @@
+import dns from 'node:dns'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
@@ -6,6 +7,14 @@ import dashboardRoutes from './routes/dashboardRoutes.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
 import activityRoutes from './routes/activityRoutes.js'
 import settingsRoutes from './routes/settingsRoutes.js'
+
+// Some ISPs and Windows network configurations refuse _mongodb._tcp DNS SRV lookups.
+// Configuring public DNS resolvers ensures Atlas mongodb+srv URIs resolve reliably.
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1', ...dns.getServers()])
+} catch {
+  // Ignore if custom DNS servers cannot be set
+}
 
 dotenv.config()
 
@@ -38,6 +47,8 @@ app.use('/api/dashboard', dashboardRoutes)
 app.use(notFoundHandler)
 app.use(errorHandler)
 
+const LOCAL_MONGO_URI = 'mongodb://127.0.0.1:27017/planetpulse'
+
 function createStandardAtlasUri(srvUri) {
   const match = srvUri.match(/^mongodb\+srv:\/\/(?<credentials>[^@]+)@(?<host>[^/?]+)(?<database>\/[^?]*)?(?<options>\?.*)?$/)
 
@@ -55,15 +66,38 @@ function isSrvDnsFailure(error) {
 }
 
 async function connectToMongo(mongoUri) {
+  const connectionOptions = {
+    serverSelectionTimeoutMS: 4000,
+  }
+
   try {
-    await mongoose.connect(mongoUri)
+    await mongoose.connect(mongoUri, connectionOptions)
+    console.log('Connected to MongoDB Atlas')
+    return
   } catch (error) {
     const standardUri = createStandardAtlasUri(mongoUri)
 
-    if (!isSrvDnsFailure(error) || !standardUri) throw error
+    if (isSrvDnsFailure(error) && standardUri) {
+      console.warn('Atlas SRV DNS lookup failed; retrying with standard Atlas connection format.')
+      try {
+        await mongoose.connect(standardUri, connectionOptions)
+        console.log('Connected to MongoDB Atlas (via standard seed format)')
+        return
+      } catch (standardError) {
+        error = standardError
+      }
+    }
 
-    console.warn('Atlas SRV DNS lookup failed; retrying with the standard Atlas connection format.')
-    await mongoose.connect(standardUri)
+    console.warn(`Could not connect to MongoDB Atlas (${error.message}).`)
+    console.warn('Checking for local MongoDB instance at 127.0.0.1:27017...')
+    try {
+      await mongoose.connect(LOCAL_MONGO_URI, { serverSelectionTimeoutMS: 3000 })
+      console.log('Connected to local MongoDB (mongodb://127.0.0.1:27017/planetpulse)')
+      return
+    } catch (localError) {
+      console.error('Local MongoDB connection also failed:', localError.message)
+      throw error
+    }
   }
 }
 
